@@ -1,0 +1,28 @@
+apiVersion: 1
+
+deleteDatasources:
+  - name: Loki
+  - name: Postgres
+
+datasources:
+- name: Loki
+  type: loki
+  access: proxy
+  url: http://loki:3100
+  isDefault: true
+  version: 1
+  editable: true
+
+  name: Postgres
+  type: postgres
+  url: grafana-database:5432
+  database: postgres
+  user: postgres
+  password: "postgres"
+  jsonData:
+      sslmode: "disable" # disable/require/verify-ca/verify-full
+      maxOpenConns: 0         # Grafana v5.4+
+      maxIdleConns: 2         # Grafana v5.4+
+      connMaxLifetime: 14400  # Grafana v5.4+
+      postgresVersion: 905 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      timescaledb: false
