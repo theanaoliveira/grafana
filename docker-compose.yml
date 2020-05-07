@@ -1,25 +1,13 @@
 version: '3.7'
 
-services:
-  grafana-database:
-    image: postgres:9.5
-    restart: always
-    environment:  
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-        - POSTGRES_DB=postgres
-    ports:
-        - 5432:5432
-    volumes:
-        - pgdata:/var/lib/postgresql/data
-    networks:
-        - grafana-network
-        
+services:       
   loki:
     image: grafana/loki:latest
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - loki_data:/var/lib/loki
     networks:
       - grafana-network
 
@@ -38,8 +26,6 @@ services:
     build:
       context: grafana
       dockerfile: Dockerfile
-    depends_on: 
-      - grafana-database
     environment:
       - GF_SECURITY_ADMIN_USER=${ADMIN_USER:-admin}
       - GF_SECURITY_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
@@ -53,8 +39,7 @@ services:
 
 volumes:
   grafana_data: {}      
-  loki: {}
-  pgdata: {}
+  loki_data: {}
 
 networks: 
   grafana-network:
